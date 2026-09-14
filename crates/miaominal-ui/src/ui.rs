@@ -23,3 +23,27 @@ pub fn init_markdown(_cx: &mut gpui_kit::App) {
     use gpui_kit::component::highlighter::LanguageRegistry;
     let _ = LanguageRegistry::singleton();
 }
+
+/// Extra key bindings for the shared text-input context so that Alt+arrows and
+/// Alt+Backspace/Delete move and remove whole words on Windows and Linux, like
+/// Option does on macOS. Ctrl is already bound by gpui-kit on non-macOS.
+#[cfg(not(target_os = "macos"))]
+pub fn init_input_key_bindings(cx: &mut gpui_kit::App) {
+    use gpui_kit::KeyBinding;
+    use gpui_kit::component::input::{
+        DeleteToNextWordEnd, DeleteToPreviousWordStart, MoveToNextWord, MoveToPreviousWord,
+        SelectToNextWordEnd, SelectToPreviousWordStart,
+    };
+
+    cx.bind_keys([
+        KeyBinding::new("alt-left", MoveToPreviousWord, Some("Input")),
+        KeyBinding::new("alt-right", MoveToNextWord, Some("Input")),
+        KeyBinding::new("alt-backspace", DeleteToPreviousWordStart, Some("Input")),
+        KeyBinding::new("alt-delete", DeleteToNextWordEnd, Some("Input")),
+        KeyBinding::new("alt-shift-left", SelectToPreviousWordStart, Some("Input")),
+        KeyBinding::new("alt-shift-right", SelectToNextWordEnd, Some("Input")),
+    ]);
+}
+
+#[cfg(target_os = "macos")]
+pub fn init_input_key_bindings(_cx: &mut gpui_kit::App) {}
