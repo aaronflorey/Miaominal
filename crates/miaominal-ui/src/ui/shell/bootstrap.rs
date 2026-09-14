@@ -133,6 +133,14 @@ fn build_keystroke_interceptor(cx: &mut Context<AppView>) -> Subscription {
                 !modifiers.control && !modifiers.alt && !modifiers.platform && !modifiers.shift;
 
             match key {
+                "enter" if command_only => {
+                    agent.update(cx, |controller, cx| {
+                        controller.prompt_input().update(cx, |input, cx| {
+                            input.insert("\n", window, cx);
+                        });
+                    });
+                    handled_session_agent_prompt_shortcut = true;
+                }
                 "enter" if plain_key => {
                     this.sync_session_port_snapshot(cx);
                     agent.update(cx, |controller, cx| {

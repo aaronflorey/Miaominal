@@ -317,6 +317,7 @@ fn main() {
     let application_runtime = runtime.clone();
     application.run(move |cx: &mut App| {
         gpui_kit::init(cx);
+        miaominal_ui::init_input_key_bindings(cx);
         miaominal_ui::initialize_application_state(application_runtime.clone(), cx);
         miaominal_ui::init_markdown(cx);
         app::install_app_menus(cx);
